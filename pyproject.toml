@@ -1,0 +1,58 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "msep"
+version = "1.0.0"
+description = "Multi-Scale Entropy Profiling for single-cell transcriptomics"
+readme = "README.md"
+license = {text = "MIT"}
+requires-python = ">=3.9"
+authors = [
+    {name = "Özge A. Çavuş", email = "ozge@aistanbulresearch.com"},
+    {name = "Ayşegül Kuşkucu"},
+]
+keywords = [
+    "single-cell", "RNA-seq", "entropy", "heterogeneity",
+    "cancer", "population coordination", "bioinformatics",
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Bio-Informatics",
+    "Operating System :: OS Independent",
+]
+dependencies = [
+    "numpy>=1.22",
+    "scipy>=1.9",
+    "pandas>=1.5",
+    "anndata>=0.9",
+    "scanpy>=1.9",
+]
+
+[project.optional-dependencies]
+plotting = ["matplotlib>=3.6", "seaborn>=0.12"]
+bayesian = ["scvi-tools>=1.1", "torch>=2.0"]
+test = ["pytest>=7.0", "pytest-cov"]
+docs = ["mkdocs", "mkdocs-material", "mkdocstrings[python]"]
+all = ["msep[plotting,bayesian,test,docs]"]
+
+[project.urls]
+Homepage = "https://github.com/aistanbul/msep"
+Documentation = "https://aistanbul.github.io/msep"
+Repository = "https://github.com/aistanbul/msep"
+Issues = "https://github.com/aistanbul/msep/issues"
+
+[tool.setuptools.packages.find]
+include = ["msep*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-v --tb=short"
