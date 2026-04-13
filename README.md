@@ -1,7 +1,7 @@
 # msep — Multi-Scale Entropy Profiling
 
-[![PyPI](https://img.shields.io/pypi/v/msep)](https://pypi.org/project/msep/)
-[![Python](https://img.shields.io/pypi/pyversions/msep)](https://pypi.org/project/msep/)
+[![PyPI version](https://img.shields.io/pypi/v/msep?color=blue)](https://pypi.org/project/msep/)
+[![Python versions](https://img.shields.io/pypi/pyversions/msep?color=blue)](https://pypi.org/project/msep/)
 [![Tests](https://img.shields.io/badge/tests-27%2F27-brightgreen)](tests/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
