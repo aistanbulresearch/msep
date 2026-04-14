@@ -9,7 +9,7 @@
 
 The framework reveals states invisible to single-scale analyses — such as populations that are *individually diverse* (high per-cell entropy) yet *collectively disciplined* (low across-cells CV) — and is applicable to any cancer type or cellular system.
 
-> Cavuş & Kuskucu (2026). *Multi-Scale Entropy Profiling Reveals Pathway-Selective Defense Coordination Across Cancer Types.*
+> Cavus & Kuskucu (2026). *Multi-Scale Entropy Profiling Reveals Pathway-Selective Defense Coordination Across Cancer Types.*
 
 ---
 
