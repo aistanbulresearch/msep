@@ -173,6 +173,33 @@ result = msep.profile(adata, pathways=pw)
 | Across-cells | Fano factor | Is CV driven by mean expression level? |
 | Cross-pathway | Pseudo-perturbation | Does high expression of gene X tighten pathway Y? |
 | Stress response | XBP1 consolidation | Does ER stress coordinate all defense programs? |
+| **Summary** | **Coordination score** | **Single number (0–1) quantifying the paradox phenotype** |
+
+## Coordination Score
+
+The MSEP Coordination Score condenses the multi-scale paradox into a single number per cell type per pathway:
+
+```
+CS(cell_type, pathway) = entropy_rank × (1 − cv_rank)
+```
+
+- **CS → 1**: high per-cell entropy + low population CV = strong paradox ("individually diverse, collectively disciplined")
+- **CS → 0**: low entropy and/or high CV = no paradox
+
+```python
+result = msep.profile(adata, pathways="cancer_defense", cell_type_key="cell_type")
+
+# Per cell-type × pathway scores with automatic classification
+result.coordination_scores
+
+#   cell_type    pathway  coordination_score  composite_score   classification
+#   CSC_TBXT+    emt                  0.9167         0.7361     strong paradox
+#   CSC_TBXT+    ferroptosis          0.7500         0.7361     strong paradox
+#   CSC_TBXT+    immune_evasion       0.3333         0.7361     weak/absent
+#   T_cell       emt                  0.1667         0.1389     weak/absent
+```
+
+The ``composite_score`` is the mean across all pathways, providing a single-number summary for each cell type. The ``classification`` column automatically labels each score as "strong paradox", "moderate paradox", or "weak/absent".
 
 ## Key Concepts
 
@@ -217,6 +244,13 @@ technical noise, providing model-based evidence for coordination claims.
 ### Core
 
 - `msep.profile(adata, ...)` → `MSEPResult` — main entry point
+
+### Coordination scoring
+
+- `result.coordination_scores` → DataFrame — per cell-type × pathway scores with classification
+- `msep.scoring.coordination_score(entropy_medians, pathway_cvs)` → DataFrame
+- `msep.scoring.coordination_score_table(entropy_df, cv_df)` → DataFrame with composite scores
+- `msep.scoring.classify_paradox(score)` → str ("strong paradox" / "moderate paradox" / "weak/absent")
 
 ### Pathway access
 
