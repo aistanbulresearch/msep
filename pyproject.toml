@@ -10,8 +10,10 @@ readme = "README.md"
 license = {text = "MIT"}
 requires-python = ">=3.9"
 authors = [
-    {name = "Özge A. Çavuş", email = "ozge@aistanbulresearch.com"},
-    {name = "Ayşegül Kuşkucu"},
+    {name = "Ozge A. Cavus", email = "ozge@aistanbulresearch.com"},
+]
+maintainers = [
+    {name = "Aysegul Kuskucu"},
 ]
 keywords = [
     "single-cell", "RNA-seq", "entropy", "heterogeneity",
