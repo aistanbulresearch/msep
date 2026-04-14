@@ -1,7 +1,7 @@
 # msep — Multi-Scale Entropy Profiling
 
-[![PyPI version](https://img.shields.io/pypi/v/msep?color=blue)](https://pypi.org/project/msep/)
-[![Python versions](https://img.shields.io/pypi/pyversions/msep?color=blue)](https://pypi.org/project/msep/)
+[![PyPI](https://img.shields.io/pypi/v/msep)](https://pypi.org/project/msep/)
+[![Python](https://img.shields.io/pypi/pyversions/msep)](https://pypi.org/project/msep/)
 [![Tests](https://img.shields.io/badge/tests-27%2F27-brightgreen)](tests/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
@@ -9,7 +9,7 @@
 
 The framework reveals states invisible to single-scale analyses — such as populations that are *individually diverse* (high per-cell entropy) yet *collectively disciplined* (low across-cells CV) — and is applicable to any cancer type or cellular system.
 
-> Cavus & Kuskucu (2026). *Multi-Scale Entropy Profiling Reveals Pathway-Selective Defense Coordination Across Cancer Types.*
+> Çavuş & Kuşkucu (2026). *Multi-Scale Entropy Profiling Reveals Pathway-Selective Defense Coordination Across Cancer Types.*
 
 ---
 
@@ -85,7 +85,66 @@ result.bootstrap                     # dict of CI results per cell_type|pathway
 result.gene_cv["emt"]                # gene-level CV for EMT pathway
 ```
 
-## Custom Pathways
+## Pathway Libraries
+
+msep provides access to 33,000+ gene sets across 12 MSigDB collections, in addition to built-in curated sets and user-defined pathways.
+
+### Built-in curated sets
+
+```python
+result = msep.profile(adata, pathways="cancer_defense")  # ferroptosis, immune evasion, EMT, housekeeping
+```
+
+### MSigDB collections (auto-downloaded and cached)
+
+```python
+result = msep.profile(adata, pathways="hallmark")    # 50 Hallmark gene sets
+result = msep.profile(adata, pathways="kegg")         # KEGG pathways
+result = msep.profile(adata, pathways="reactome")     # Reactome pathways
+result = msep.profile(adata, pathways="go_bp")        # GO Biological Process
+result = msep.profile(adata, pathways="oncogenic")    # Oncogenic signatures
+result = msep.profile(adata, pathways="immunologic")  # Immunologic signatures
+```
+
+Available collections:
+
+| Shortcut | Collection | Sets |
+|----------|-----------|------|
+| `hallmark` | MSigDB Hallmark | 50 |
+| `kegg` | KEGG Pathways | ~186 |
+| `reactome` | Reactome | ~1,615 |
+| `go_bp` | GO Biological Process | ~7,600 |
+| `go_cc` | GO Cellular Component | ~1,000 |
+| `go_mf` | GO Molecular Function | ~1,700 |
+| `oncogenic` | Oncogenic Signatures | ~189 |
+| `immunologic` | Immunologic Signatures | ~5,219 |
+| `cell_type` | Cell Type Signatures | ~830 |
+| `biocarta` | BioCarta | ~217 |
+| `pid` | PID | ~196 |
+| `wikipathways` | WikiPathways | ~664 |
+
+### Select specific sets
+
+```python
+# Single set by name
+result = msep.profile(adata, pathways="hallmark:EPITHELIAL_MESENCHYMAL_TRANSITION")
+
+# Filter sets by keyword
+pw = msep.pathways.from_msigdb("hallmark", include=["INFLAMMATORY", "APOPTOSIS"])
+
+# Search within a collection
+matches = msep.pathways.search_msigdb("autophagy", collection="reactome")
+```
+
+### Combine sources
+
+```python
+pw = msep.pathways.from_msigdb("hallmark", top_n=5)
+pw["my_custom_set"] = ["GENE1", "GENE2", "GENE3"]
+result = msep.profile(adata, pathways=pw)
+```
+
+### Custom pathways only
 
 ```python
 my_pathways = {
@@ -93,8 +152,14 @@ my_pathways = {
     "apoptosis": ["BCL2", "BAX", "CASP3", "CASP9", "TP53"],
     "stemness": ["SOX2", "POU5F1", "NANOG", "KLF4", "MYC"],
 }
-
 result = msep.profile(adata, pathways=my_pathways, cell_type_key="cell_type")
+```
+
+### Load from local GMT file
+
+```python
+pw = msep.pathways.load_gmt("my_gene_sets.gmt")
+result = msep.profile(adata, pathways=pw)
 ```
 
 ## What It Computes
@@ -152,6 +217,14 @@ technical noise, providing model-based evidence for coordination claims.
 ### Core
 
 - `msep.profile(adata, ...)` → `MSEPResult` — main entry point
+
+### Pathway access
+
+- `msep.pathways.get_pathways(name)` → dict — built-in or MSigDB collections
+- `msep.pathways.from_msigdb(collection, include, exclude, top_n)` → dict — fetch from MSigDB
+- `msep.pathways.search_msigdb(query, collection)` → dict — search by keyword
+- `msep.pathways.list_collections()` → dict — available MSigDB shortcuts
+- `msep.pathways.load_gmt(path)` → dict — load local GMT file
 
 ### Low-level functions
 
