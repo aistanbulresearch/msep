@@ -295,7 +295,7 @@ If you use msep in your research, please cite:
 @article{cavus2026msep,
   title={Multi-Scale Entropy Profiling Reveals Pathway-Selective Defense 
          Coordination Across Cancer Types},
-  author={{\c{C}}avu{\c{s}}, {\"O}zge A. and Ku{\c{s}}kucu, Ay{\c{s}}eg{\"u}l},
+  author={Cavus, Ozge A. and Kuskucu, Aysegul},
   year={2026},
   journal={[submitted]},
 }
