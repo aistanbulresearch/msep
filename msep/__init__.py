@@ -19,7 +19,7 @@ Reference
 Pathway-Selective Defense Coordination Across Cancer Types.
 """
 
-__version__ = "1.0.0"
+__version__ = "1.1.0"
 
 # Core API
 from .core import profile  # noqa: F401
@@ -30,6 +30,7 @@ from . import entropy  # noqa: F401
 from . import coordination  # noqa: F401
 from . import perturbation  # noqa: F401
 from . import pathways  # noqa: F401
+from . import datasets  # noqa: F401
 
 # Plotting (lazy — only imported when called)
 def plot_entropy_violin(result, **kw):
@@ -66,6 +67,7 @@ __all__ = [
     "coordination",
     "perturbation",
     "pathways",
+    "datasets",
     "bayesian_validate",
     "plot_entropy_violin",
     "plot_pathway_cv_heatmap",
