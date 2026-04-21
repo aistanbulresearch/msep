@@ -284,7 +284,7 @@ Add a Discussion paragraph contrasting MSEP + scVI with BASiCS:
 
 ### Reminder triggers
 
-Claude will proactively surface the pending decisions at these moments:
+The assistant will proactively surface the pending decisions at these moments:
 - **Start of Week 4** (WP-4 kick-off) → remind about #1 (BASiCS Option A vs B)
 - **Start of Week 5** (WP-6 kick-off) → remind about #3 (Method Article reframing)
 - **During WP-7 Minor Revisions** → remind about #2 (Dual Shield reference)
@@ -301,5 +301,5 @@ Claude will proactively surface the pending decisions at these moments:
 
 - Progress tracker: update this file weekly; move completed items to a `## Done` section at the bottom
 - GitHub Issues: open one issue per WP, labelled `gb-submission`, with checkboxes for sub-tasks
-- Branch strategy: `feature/gb-wp1-sim-validation`, `feature/gb-wp2-docs`, etc.; rebase onto `main` after review
+- Branch strategy: `aistanbul/gb-wp1-sim-validation`, `aistanbul/gb-wp2-docs`, etc.; rebase onto `main` after review
 - Commit prefix: `paper(gb):` for manuscript-side edits, standard conventional commits for code
