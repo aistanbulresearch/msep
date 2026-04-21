@@ -50,6 +50,33 @@ class MSEPResult:
     # -------------------------------------------------------------------
 
     @property
+    def coordination_scores(self) -> pd.DataFrame:
+        """Per ``(cell_type, pathway)`` coordination scores with classification.
+
+        Wraps :func:`msep.scoring.coordination_score_table` with the
+        current result's entropy and CV tables, then adds a
+        ``classification`` column via :func:`msep.scoring.classify_paradox`.
+
+        Returns an empty DataFrame if the result is missing the underlying
+        tables (e.g. after a partial pipeline run).
+        """
+        from .scoring import coordination_score_table, classify_paradox
+
+        if self.per_cell_entropy.empty or self.pathway_cv.empty:
+            return pd.DataFrame(
+                columns=["cell_type", "pathway", "coordination_score",
+                         "composite_score", "classification"]
+            )
+
+        table = coordination_score_table(self.per_cell_entropy,
+                                         self.pathway_cv)
+        if table.empty:
+            return table
+        table = table.copy()
+        table["classification"] = table["coordination_score"].map(classify_paradox)
+        return table
+
+    @property
     def paradox_summary(self) -> pd.DataFrame:
         """One-row-per-cell-type summary: per-cell entropy vs. across-cells CV.
 

@@ -2,8 +2,9 @@
 
 [![PyPI](https://img.shields.io/pypi/v/msep?cacheSeconds=3600)](https://pypi.org/project/msep/)
 [![Python](https://img.shields.io/pypi/pyversions/msep?cacheSeconds=3600)](https://pypi.org/project/msep/)
-[![Tests](https://img.shields.io/badge/tests-27%2F27-brightgreen)](tests/)
+[![Tests](https://img.shields.io/badge/tests-48%2F48-brightgreen)](tests/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/aistanbulresearch/msep/blob/main/notebooks/quickstart/quickstart_colab.ipynb)
 
 **Multi-Scale Entropy Profiling** integrates per-cell Shannon entropy with across-cells coefficient of variation (CV), decomposed by biological pathway, to characterise population-level transcriptomic coordination in single-cell RNA-seq data.
 
@@ -25,6 +26,20 @@ pip install msep[plotting]
 ```
 
 ## Quick Start
+
+**Zero-setup demo (Colab, ≤5 min):** [notebooks/quickstart/quickstart_colab.ipynb](notebooks/quickstart/quickstart_colab.ipynb) — uses the bundled synthetic dataset, no downloads required.
+
+### Using the bundled example
+
+```python
+import msep
+
+adata = msep.datasets.load_example()          # 500-cell synthetic demo
+result = msep.profile(adata, pathways="cancer_defense", cell_type_key="cell_type")
+result.paradox_summary                         # per-cell entropy vs. population CV
+```
+
+### Your own data
 
 ```python
 import scanpy as sc
@@ -251,6 +266,11 @@ technical noise, providing model-based evidence for coordination claims.
 - `msep.scoring.coordination_score(entropy_medians, pathway_cvs)` → DataFrame
 - `msep.scoring.coordination_score_table(entropy_df, cv_df)` → DataFrame with composite scores
 - `msep.scoring.classify_paradox(score)` → str ("strong paradox" / "moderate paradox" / "weak/absent")
+
+### Example datasets
+
+- `msep.datasets.load_example(n_cells=500, seed=42)` → `AnnData` — 500-cell synthetic demo reproducing the paper's qualitative paradox. Deterministic, no download.
+- `msep.datasets.list_examples()` → dict — available built-in example datasets.
 
 ### Pathway access
 
