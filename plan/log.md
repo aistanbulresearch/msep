@@ -8,7 +8,7 @@ and decision log.
 
 ## Iteration 1 — 2026-04-21 · WP-2.1 + WP-2.2 (bundled demo + Colab quickstart)
 
-**Duration:** ~1 session · **Branch:** `claude/kind-albattani-5ad17a` (worktree)
+**Duration:** ~1 session · **Branch:** feature branch merged into `main` as PR #1
 
 ### What landed
 
@@ -36,7 +36,9 @@ Stored in [`plan/GB_SUBMISSION_WORKPLAN.md §5`](GB_SUBMISSION_WORKPLAN.md#5-dec
 
 - `python -m pytest tests/` → **48 passed, 0 failed** (27 existing + 21 new)
 - Notebook end-to-end local execution (minus the `pip install` cell) → **OK, no errors in any output cell**
-- Lint / style: module conforms to existing repo conventions (immutable specs via module-level dict, NB sampling, sparse CSR output, typed signatures)
+- **Colab runtime verification (user-run, CPU, 2026-04-21)** — all cells executed to completion after install was pinned to the feature branch. XBP1 consolidation output reproduced the paper's pattern qualitatively: all three defense pathways show lower CV in XBP1-high vs XBP1-zero CSC (ferroptosis Δ=−0.064, immune_evasion Δ=−0.160, emt Δ=−0.049). Ranking preserved: `emt < ferroptosis < immune_evasion` within XBP1-zero CSC. Absolute magnitudes smaller than the full-cohort paper values as expected for 500-cell synthetic data.
+- CI green on Python 3.9 / 3.10 / 3.11 / 3.12.
+- Lint / style: module conforms to existing repo conventions (immutable specs via module-level dict, NB sampling, sparse CSR output, typed signatures).
 
 ### Files touched
 
@@ -56,18 +58,16 @@ Stored in [`plan/GB_SUBMISSION_WORKPLAN.md §5`](GB_SUBMISSION_WORKPLAN.md#5-dec
 
 ### Not yet done (reviewer-blocking items still pending)
 
-1. Commit + push + PR — currently all changes are local / uncommitted on the worktree branch
-2. Publish `msep==1.1.0` to PyPI (needs 2FA, user-side action)
-3. Per-figure reproducibility notebooks (WP-2.3) — folder scaffold only
-4. mkdocs docs site deployment (WP-2.5)
-5. `nbmake` CI smoke test addition (WP-2.6)
-6. Bundled `examples/chordoma_msep.clean.ipynb` (cleaned-output version of the existing 63 MB notebook)
+1. Publish `msep==1.1.0` to PyPI (needs 2FA, user-side action)
+2. Per-figure reproducibility notebooks (WP-2.3) — folder scaffold only
+3. mkdocs docs site deployment (WP-2.5)
+4. `nbmake` CI smoke test addition (WP-2.6)
+5. Bundled `examples/chordoma_msep.clean.ipynb` (cleaned-output version of the existing 63 MB notebook)
 
 ### Next iteration candidates (ordered by GB impact)
 
 - **WP-2.3** first figure notebook — `notebooks/figures/figure2_paradox.ipynb` using the bundled demo data (CPU-only, no Colab required)
 - **WP-1 kickoff** — Splatter simulation scenarios A/B/C in `notebooks/validation/sim_splatter.ipynb` (needs Colab A100 later; can scaffold locally)
 - **WP-3 kickoff** — CellxGene Census pull script in `notebooks/pan_cancer/fetch_and_profile.ipynb` for the 8 locked cancer types (needs Colab runtime)
-- **Housekeeping** — commit current changes as PR #1 on `feature/gb-wp2-quickstart-demo`
 
 ---
