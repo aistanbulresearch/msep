@@ -8,7 +8,7 @@ local setup, but most will also work on a laptop with 8 GB RAM.
 | Folder | Purpose |
 |---|---|
 | [`quickstart/`](quickstart/) | 5-minute smoke test for new users — uses the bundled synthetic dataset, no downloads required. |
-| [`figures/`](figures/) | One notebook per paper figure (Figures 2–6). Each reproduces the full figure from public data. |
+| [`figures/`](figures/) | One notebook per paper figure (Figures 2–6). Each reproduces the four-panel layout from the bundled demo data and points to a real-data swap-in for paper-exact numbers. |
 | [`validation/`](validation/) | Simulation-based ground-truth validation (Splatter / scDesign3) — WP-1. |
 | [`pan_cancer/`](pan_cancer/) | CellxGene Census pan-cancer expansion — WP-3. |
 | [`null_distributions/`](null_distributions/) | Gene-set permutation and cross-pathway null distributions — WP-5. |
