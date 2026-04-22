@@ -6,6 +6,44 @@ and decision log.
 
 ---
 
+## Iteration 3 — 2026-04-22 · WP-2.3 per-figure reproducibility notebooks
+
+**Duration:** ~1 session
+
+### What landed
+
+| Notebook | Purpose | Runs on demo? |
+|---|---|---|
+| `notebooks/figures/figure2_paradox.ipynb` | **Flagship** — 4-panel Figure 2 (entropy violin, CSC pathway CV bar, cell type × pathway heatmap, paradox scatter) with combined 2×2 publication layout | ✅ full |
+| `notebooks/figures/figure3_pan_cancer.ipynb` | Figure 3 (pan-cancer heatmap, EMT ranking, chordoma vs median) — uses paper Table S5 values until WP-3 Census pipeline provides live matrix | ✅ full from paper values |
+| `notebooks/figures/figure4_perturbation.ipynb` | Figure 4 panels A (pseudo-perturbation heatmap) + C (gene-level CV bars); panel B documented as illustrative schematic | ✅ full |
+| `notebooks/figures/figure5_xbp1.ipynb` | Figure 5 (XBP1 distribution, pathway CV by XBP1 group with Δ annotations, pan-cancer consolidation scorecard) | ✅ full |
+| `notebooks/figures/figure6_bulk_validation.ipynb` | Figure 6 (scRNA vs bulk ranking concordance, chordoma vs notochord, per-patient EMT-first, gene-level Spearman) | ✅ full |
+| `notebooks/figures/README.md` | Index with Open-in-Colab links + demo-vs-real-data explanation | — |
+
+### Pattern established
+
+All notebooks follow the same structure: install cell → load demo data → `msep.profile(...)` → per-panel rendering → save PDF + PNG → real-data swap-in markdown block at the end. The `msep.profile()` call is the only stateful step; swapping in the Arrieta 2025 cohort changes nothing downstream because the plotting code is dataset-agnostic.
+
+### Verification
+
+- All 5 notebooks execute end-to-end locally (CPU, <5 min each) via `nbclient` smoke test — 0 errors
+- Each panel writes both `.pdf` (vector) and `.png` (300 dpi raster) outputs
+- Figure 4 perturbation schema aligned with actual `result.perturbation` columns (`delta_cv`, `perm_p`) after an initial column-name mismatch was caught by the smoke test
+
+### Out of scope
+
+- Panel B of Figure 4 (mutual-reinforcement schematic) is illustrative, not data-driven; documented as a vector-graphics task rather than generated from code.
+- Real-data reproduction of Figures 3 and 5 panel C requires the WP-3 CellxGene Census pipeline; hard-coded paper values stand in until that lands.
+
+---
+
+## Iteration 2 — 2026-04-22 · PyPI release 1.1.0 + quickstart simplification
+
+See [PR #4](https://github.com/aistanbulresearch/msep/pull/4) for details (merged to `main`).
+
+---
+
 ## Iteration 1 — 2026-04-21 · WP-2.1 + WP-2.2 (bundled demo + Colab quickstart)
 
 **Duration:** ~1 session · **Branch:** feature branch merged into `main` as PR #1
