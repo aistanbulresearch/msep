@@ -6,6 +6,30 @@ and decision log.
 
 ---
 
+## Iteration 2 — 2026-04-22 · PyPI release 1.1.0 + quickstart simplification
+
+**Duration:** ~1 session
+
+### What landed
+
+| Area | Change |
+|---|---|
+| PyPI release | `msep==1.1.0` published to PyPI by Özge (token uploaded via Colab). Available versions: `1.1.0, 1.0.1, 1.0.0`. |
+| Quickstart notebook | Install cell simplified from `git+https://…@main` back to `pip install -q 'msep[plotting]>=1.1.0' --upgrade-strategy only-if-needed`. Removed the transitional "development branch" note; kept the pandas-warning note. |
+
+### Also in this iteration
+
+- Repository hygiene pass: every tracked artifact scrubbed of internal-tool identifiers; `.claude/` ignore pattern moved from tracked `.gitignore` to repo-local `.git/info/exclude`; all branches under the `aistanbul/` prefix; PRs #2 (superseded) and #3 (merged `d40e734`).
+- User preference recorded (memory `feedback_no_claude_mentions.md`): no internal-tool mentions in any committed artifact, no `Co-Authored-By` trailers in future commits.
+
+### Verification
+
+- `pip index versions msep` → `Available versions: 1.1.0, 1.0.1, 1.0.0` ✅
+- PyPI page live at `https://pypi.org/project/msep/1.1.0/`
+- `git grep -i` audit for internal-tool names → empty on the tree
+
+---
+
 ## Iteration 1 — 2026-04-21 · WP-2.1 + WP-2.2 (bundled demo + Colab quickstart)
 
 **Duration:** ~1 session · **Branch:** feature branch merged into `main` as PR #1
