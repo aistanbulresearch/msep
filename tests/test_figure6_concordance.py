@@ -35,12 +35,18 @@ def gene_concordance() -> pd.DataFrame:
     return _read("gene_cv_concordance_scRNA_vs_bulk.csv")
 
 
-class TestPanelD:
-    """Gene-level CV concordance between scRNA-seq and bulk."""
+class TestSupplementaryGeneLevel:
+    """Gene-level CV concordance -- Supplementary Figure S15.
+
+    This analysis was formerly Figure 6 panel D. Recomputed over the full gene set
+    the correlation is weak and not significant, so it no longer supports a
+    main-figure concordance claim and now stands in the supplement as a reported
+    null result. The pathway-level concordance in Figure 6A is unaffected.
+    """
 
     def test_uses_all_twenty_three_genes(self, gene_concordance: pd.DataFrame) -> None:
-        # Results 3.7 and Table S6 both describe 23 key defense genes. Panel D must
-        # plot the whole set, not a subset chosen after the fact.
+        # Results 3.7 and Table S6 both describe 23 key defense genes. S15 must plot
+        # the whole set, not a subset chosen after the fact.
         assert len(gene_concordance) == 23
         assert gene_concordance["gene"].is_unique
 

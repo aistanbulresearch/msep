@@ -1,23 +1,31 @@
 """Regenerate manuscript Figure 6 (bulk RNA-seq validation) from analysis output.
 
-This rebuilds all four panels from the CSVs in ``processed/`` so that every number
-printed on the figure is derived, not typed.
+Every number printed on these figures is computed from the CSVs in ``processed/``
+rather than typed in.
 
-The motivating defect was panel D. The version carried in the manuscript reported
-``Spearman rho = 0.000, p = 1.0000`` over an 8-gene subset. That statistic matched
-neither the source data (23 genes, rho = -0.110, p = 0.618) nor the eight points the
-panel itself plotted (rho = -0.500, p = 0.207), and several plotted coordinates were
-wrong -- SLC7A11 appeared at a scRNA-seq CV of ~2.1 against a true value of 13.73.
+The motivating defect was the old panel D. The version carried in the manuscript
+reported ``Spearman rho = 0.000, p = 1.0000`` over an 8-gene subset. That statistic
+matched neither the source data (23 genes, rho = -0.110, p = 0.618) nor the eight
+points the panel itself plotted (rho = -0.500, p = 0.207), and several plotted
+coordinates were wrong -- SLC7A11 appeared at a scRNA-seq CV of ~2.1 against a true
+value of 13.73.
 
-Panel D is now computed from all 23 genes in
-``processed/gene_cv_concordance_scRNA_vs_bulk.csv`` and reports the correlation it
-actually finds, including when that correlation is not significant.
+Recomputed honestly over all 23 genes the correlation is weak and not significant,
+so gene-level CV does not concord across platforms. The claim section 3.7 actually
+rests on is the *pathway*-level hierarchy, which panel A establishes and which is
+unaffected. Figure 6 therefore keeps three panels, and the gene-level scatter moves
+to the supplement, where a null result can be reported plainly.
 
 Usage::
 
     python notebooks/paper_figures/figure6_bulk_validation.py
 
-Writes ``figures/Publication/Figure_6_BulkValidation.{pdf,png}``.
+Writes:
+    figures/Publication/Figure_6_BulkValidation.{pdf,png}          (panels A-C)
+    figures/Supplementary/Figure_S15_GeneLevel_CV_Concordance.{pdf,png}
+
+``Figure_6D_GeneLevel_CV_Concordance_REAL.{pdf,png}`` in ``figures/Supplementary/``
+is superseded by the S15 output and can be removed.
 """
 
 from __future__ import annotations
@@ -33,7 +41,8 @@ logger = logging.getLogger(__name__)
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 PROCESSED = REPO_ROOT / "processed"
-OUTPUT_DIR = REPO_ROOT / "figures" / "Publication"
+PUBLICATION_DIR = REPO_ROOT / "figures" / "Publication"
+SUPPLEMENTARY_DIR = REPO_ROOT / "figures" / "Supplementary"
 
 # Pathway display order, shared across panels A and B.
 PATHWAY_ORDER = ["emt_mechanical", "housekeeping", "ferroptosis", "immune_evasion"]
@@ -132,11 +141,11 @@ def panel_c(ax: plt.Axes) -> None:
     ax.spines[['top', 'right']].set_visible(False)
 
 
-def panel_d(ax: plt.Axes) -> float:
+def supplementary_gene_level(ax: plt.Axes) -> tuple[float, float]:
     """Gene-level CV, scRNA-seq vs bulk, over all 23 genes.
 
     Returns:
-        The Spearman correlation actually computed, so the caller can log it.
+        The Spearman correlation and p-value, so the caller can log them.
     """
     genes = _read("gene_cv_concordance_scRNA_vs_bulk.csv")
     rho, pval = spearmanr(genes["scRNA_CV"], genes["Bulk_CV"])
@@ -147,9 +156,18 @@ def panel_d(ax: plt.Axes) -> float:
                    edgecolor='black', linewidth=0.6, zorder=3,
                    label=category.replace('_', ' '))
 
+    # Three pairs sit close enough that their default labels overlap; nudge one of
+    # each pair rather than pulling in a label-layout dependency.
+    label_offsets = {
+        "CD47": (5, -9),
+        "SMAD2": (5, -9),
+        "SMAD3": (5, 4),
+        "TGFBR2": (-38, -6),
+    }
     for _, row in genes.iterrows():
         ax.annotate(row["gene"], (row["scRNA_CV"], row["Bulk_CV"]),
-                    textcoords='offset points', xytext=(5, 3), fontsize=6.5)
+                    textcoords='offset points',
+                    xytext=label_offsets.get(row["gene"], (5, 3)), fontsize=7)
 
     # SLC7A11 and CD274 sit an order of magnitude out on the scRNA-seq axis; a log
     # scale keeps the remaining 21 genes legible instead of collapsing them.
@@ -157,37 +175,64 @@ def panel_d(ax: plt.Axes) -> float:
     ax.set_xlabel('scRNA-seq gene CV (CSC_TBXT+, across cells), log scale')
     ax.set_ylabel('Bulk RNA-seq gene CV (across tumors)')
 
-    significance = 'n.s.' if pval >= 0.05 else f'p = {pval:.3f}'
+    verdict = 'not significant' if pval >= 0.05 else 'significant'
     ax.set_title(
-        f'Gene-level CV concordance\n'
-        f'(Spearman $\\rho$ = {rho:.3f}, p = {pval:.3f}, {significance}, n = {len(genes)})'
+        f'Gene-level CV concordance, scRNA-seq vs bulk RNA-seq\n'
+        f'Spearman $\\rho$ = {rho:.3f}, p = {pval:.3f} ({verdict}), n = {len(genes)}'
     )
-    ax.legend(fontsize=7, loc='best')
+    ax.legend(fontsize=8, loc='best')
     ax.spines[['top', 'right']].set_visible(False)
-    return float(rho)
+    return float(rho), float(pval)
 
 
-def main() -> None:
-    """Build all four panels and write the figure."""
-    logging.basicConfig(level=logging.INFO, format="%(message)s")
+def build_figure6() -> None:
+    """Panels A-C: the pathway-level validation Figure 6 now carries."""
+    # A and B share the pathway axis and sit side by side; C spans the width below
+    # because its six patient labels need the room.
+    fig = plt.figure(figsize=(15, 11))
+    gs = fig.add_gridspec(2, 2, height_ratios=[1, 1])
+    axes = [fig.add_subplot(gs[0, 0]), fig.add_subplot(gs[0, 1]),
+            fig.add_subplot(gs[1, :])]
 
-    fig, axes = plt.subplots(2, 2, figsize=(15, 11))
-    panel_a(axes[0, 0])
-    panel_b(axes[0, 1])
-    panel_c(axes[1, 0])
-    rho = panel_d(axes[1, 1])
+    panel_a(axes[0])
+    panel_b(axes[1])
+    panel_c(axes[2])
 
-    for ax, letter in zip(axes.flat, "ABCD"):
-        ax.text(-0.09, 1.06, letter, transform=ax.transAxes,
+    for ax, letter in zip(axes, "ABC"):
+        ax.text(-0.06, 1.06, letter, transform=ax.transAxes,
                 fontsize=17, fontweight='bold', va='top')
 
     fig.tight_layout()
-    OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
-    fig.savefig(OUTPUT_DIR / "Figure_6_BulkValidation.pdf", bbox_inches='tight')
-    fig.savefig(OUTPUT_DIR / "Figure_6_BulkValidation.png", dpi=300, bbox_inches='tight')
+    PUBLICATION_DIR.mkdir(parents=True, exist_ok=True)
+    fig.savefig(PUBLICATION_DIR / "Figure_6_BulkValidation.pdf", bbox_inches='tight')
+    fig.savefig(PUBLICATION_DIR / "Figure_6_BulkValidation.png", dpi=300,
+                bbox_inches='tight')
+    plt.close(fig)
+    logger.info("Wrote Figure_6_BulkValidation.{pdf,png} to %s", PUBLICATION_DIR)
 
-    logger.info("Wrote Figure_6_BulkValidation.{pdf,png} to %s", OUTPUT_DIR)
-    logger.info("Panel D gene-level Spearman rho = %.3f", rho)
+
+def build_supplementary() -> tuple[float, float]:
+    """Figure S15: the gene-level scatter, reported as the null result it is."""
+    fig, ax = plt.subplots(figsize=(9, 7))
+    rho, pval = supplementary_gene_level(ax)
+
+    fig.tight_layout()
+    SUPPLEMENTARY_DIR.mkdir(parents=True, exist_ok=True)
+    stem = SUPPLEMENTARY_DIR / "Figure_S15_GeneLevel_CV_Concordance"
+    fig.savefig(stem.with_suffix(".pdf"), bbox_inches='tight')
+    fig.savefig(stem.with_suffix(".png"), dpi=300, bbox_inches='tight')
+    plt.close(fig)
+    logger.info("Wrote Figure_S15_GeneLevel_CV_Concordance.{pdf,png} to %s",
+                SUPPLEMENTARY_DIR)
+    return rho, pval
+
+
+def main() -> None:
+    """Build Figure 6 (A-C) and Supplementary Figure S15."""
+    logging.basicConfig(level=logging.INFO, format="%(message)s")
+    build_figure6()
+    rho, pval = build_supplementary()
+    logger.info("Gene-level Spearman rho = %.3f, p = %.3f", rho, pval)
 
 
 if __name__ == "__main__":
