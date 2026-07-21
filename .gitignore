@@ -38,5 +38,8 @@ notebooks/figures/figure*_panel*.png
 notebooks/figures/figure*_combined.pdf
 notebooks/figures/figure*_combined.png
 
-# Raw pipeline output (large; data/pan_cancer_cv.csv is the tracked distillation)
+# Analysis output synced from Drive (large, regenerable). data/pan_cancer_cv.csv is
+# the tracked distillation of processed/; figure PDFs are rebuilt by the scripts in
+# notebooks/paper_figures/.
 processed/
+figures/
