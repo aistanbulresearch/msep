@@ -52,9 +52,11 @@ IMMUNE_EVASION: List[str] = [
     "HLA-E", "B2M", "CD274", "MICA", "MICB", "ADAM10", "ADAM17",
     "TAP1", "TAP2", "KLRC1", "KLRD1", "ULBP1", "ULBP2", "ULBP3",
     "HLA-A", "HLA-B", "HLA-C", "HLA-F", "HLA-G",
-    "CD47", "LGALS9", "PVRL2", "PVR", "VTCN1", "TNFRSF14",
+    "CD47", "LGALS9", "PVR", "VTCN1", "TNFRSF14",
     "NECTIN2", "CD200", "IDO1", "PDCD1LG2",
 ]
+# Note: PVRL2 is the withdrawn HGNC alias of NECTIN2 and was removed to avoid
+# double-counting the same gene; the set resolves to 28 distinct genes.
 
 EMT: List[str] = [
     "VIM", "CDH1", "CDH2", "ZEB1", "ZEB2", "SNAI1", "SNAI2",

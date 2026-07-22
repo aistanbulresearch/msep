@@ -69,7 +69,10 @@ def pathway_cv(
         return np.nan, len(present)
 
     cvs = stds[valid] / means[valid]
-    return float(np.mean(cvs)), len(present)
+    # Report the genes actually averaged (positive mean), not merely the genes
+    # found in the matrix: a pathway gene that is zero in every cell has an
+    # undefined CV and is excluded here, so counting it would overstate coverage.
+    return float(np.mean(cvs)), int(valid.sum())
 
 
 # -----------------------------------------------------------------------
