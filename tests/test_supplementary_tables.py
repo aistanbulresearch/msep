@@ -1,7 +1,7 @@
 """Check the assembled supplementary tables against the manuscript.
 
 Every table the manuscript declares has a stated shape -- 42 pairwise comparisons,
-23 defense genes, 12 cancer types, four gene sets of 33/29/28/20 genes. These tests
+23 defense genes, 12 cancer types, four gene sets of 33/28/28/20 genes. These tests
 assert the assembled tables still have those shapes and still carry the values the
 Results quote, so a rebuild cannot quietly disagree with the text.
 
@@ -36,7 +36,8 @@ class TestDeclaredShapes:
     @pytest.mark.parametrize(
         "table,expected_rows",
         [
-            ("S1", 110),   # 33 + 29 + 28 + 20 pathway genes
+            ("S1", 109),   # 33 + 28 + 28 + 20 pathway genes (immune evasion: PVRL2
+                           # dropped as a NECTIN2 alias, see test_curation_and_cv)
             ("S2", 10),    # "Ten cell types were identified in total" (3.1)
             ("S3", 10),    # per-cell entropy statistics for all ten cell types
             ("S4", 42),    # "all 42 pairwise Mann-Whitney U tests" (3.2)
@@ -65,7 +66,7 @@ class TestS1GeneSets:
 
     @pytest.mark.parametrize(
         "pathway,expected",
-        [("ferroptosis", 33), ("immune_evasion", 29), ("emt", 28), ("housekeeping", 20)],
+        [("ferroptosis", 33), ("immune_evasion", 28), ("emt", 28), ("housekeeping", 20)],
     )
     def test_gene_set_size(self, tables, pathway: str, expected: int) -> None:
         assert (tables["S1"]["pathway"] == pathway).sum() == expected
