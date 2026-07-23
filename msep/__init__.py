@@ -19,7 +19,7 @@ Reference
 Pathway-Selective Defense Coordination Across Cancer Types.
 """
 
-__version__ = "1.1.0"
+__version__ = "1.2.0"
 
 # Core API
 from .core import profile  # noqa: F401
