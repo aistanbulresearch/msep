@@ -40,12 +40,18 @@ from typing import Dict, List, Optional, Union
 # Curated cancer defense pathway gene sets
 # ---------------------------------------------------------------------------
 
+# 33-gene ferroptosis set as used by the manuscript analysis (FerrDb V2 +
+# literature curation). This is the set behind Figure 2, the scVI decomposition,
+# and the pan-cancer comparison; the package is standardized to it so that
+# `pip install msep` reproduces the published figures. It differs from an earlier
+# draft set by five genes (in: HSPB1, IREB2, NFS1, PROM2, STEAP3; out: ALOX15B,
+# CARS1, CISD2, PEBP1, SLC3A2).
 FERROPTOSIS: List[str] = [
     "GPX4", "ACSL4", "SLC7A11", "FTH1", "FTL", "NCOA4", "LPCAT3",
     "TFRC", "GSS", "GCLC", "NFE2L2", "HMOX1", "SCD", "FADS2", "CBS",
-    "GCLM", "SLC3A2", "ALOX5", "ALOX12", "ALOX15", "ALOX15B",
-    "ACSL3", "CARS1", "CISD1", "CISD2", "DPP4", "FANCD2", "GLS2",
-    "MT1G", "PEBP1", "SAT1", "VDAC2", "VDAC3",
+    "GCLM", "ALOX5", "ALOX12", "ALOX15", "ACSL3", "CISD1", "DPP4",
+    "FANCD2", "GLS2", "MT1G", "SAT1", "VDAC2", "VDAC3",
+    "HSPB1", "IREB2", "NFS1", "PROM2", "STEAP3",
 ]
 
 IMMUNE_EVASION: List[str] = [
