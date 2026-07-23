@@ -1,6 +1,6 @@
 cancer_type,display_name,source,accession,platform,n_cells,cell_selection,in_primary_comparison,emt_cv,emt_n_genes,ferroptosis_cv,ferroptosis_n_genes,immune_evasion_cv,immune_evasion_n_genes,housekeeping_cv,housekeeping_n_genes
 Melanoma,Melanoma,GEO,GSE115978,Smart-seq2,2018,Mal (annotated),False,3.224,27,3.001,32,3.356,28,0.583,20
-Chordoma,Chordoma,This study,Zenodo (Arrieta et al. 2025),10x,6730,CSC_TBXT+,True,4.632,28,5.387,32,8.548,28,1.743,20
+Chordoma,Chordoma,This study,Zenodo (Arrieta et al. 2025),10x,6730,CSC_TBXT+,True,4.632,28,5.609,33,8.548,28,1.743,20
 Osteosarcoma*,Osteosarcoma,GEO,GSE162454,10x,4841,All cells (no annotation),True,5.253,28,8.973,32,7.079,28,2.152,20
 BCC,Basal cell carcinoma,CellxGene Census,census_2025-11-08,10x,3452,malignant (author-labeled),True,5.488,26,4.592,31,5.274,16,1.47,17
 Breast,Breast cancer,GEO,GSE176078,10x,5000,Cancer Epithelial,True,5.492,27,5.776,32,6.512,28,1.851,20

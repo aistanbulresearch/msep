@@ -24,15 +24,21 @@ recorded in Methods 2.4) and S2 ``reference``.
 from __future__ import annotations
 
 import logging
+import sys
 from pathlib import Path
 
 import pandas as pd
 
-import msep.pathways as pathways
-
 logger = logging.getLogger(__name__)
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
+
+# Ensure the local package is imported rather than any pip-installed msep: when
+# this file is run as a script, sys.path[0] is its own directory, so a bare
+# ``import msep`` would otherwise resolve to the installed distribution and the
+# gene sets could silently disagree with the working tree.
+sys.path.insert(0, str(REPO_ROOT))
+import msep.pathways as pathways  # noqa: E402
 PROCESSED = REPO_ROOT / "processed"
 DATA = REPO_ROOT / "data"
 OUTPUT_DIR = REPO_ROOT / "figures" / "Supplementary" / "tables"

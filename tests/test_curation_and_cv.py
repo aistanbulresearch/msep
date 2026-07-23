@@ -80,27 +80,68 @@ class TestImmuneEvasionGeneSet:
         assert len(pathways.HOUSEKEEPING) == 20
 
 
+class TestFerroptosisGeneSet:
+    """The ferroptosis set must match the one the manuscript's figures were built on.
+
+    Two different 33-gene ferroptosis sets were in circulation: the one the package
+    originally shipped, and the one the Colab analysis (and therefore Figure 2, the
+    scVI decomposition, and gene-set-sensitivity) actually used. They shared only 28
+    genes. The analysis set is authoritative -- it is what the published figures
+    report -- so the package is standardized to it here, and Supplementary Table S1
+    and the pan-cancer ferroptosis values follow.
+    """
+
+    # The five genes the analysis set includes that the old package set omitted.
+    ANALYSIS_ONLY = {"HSPB1", "IREB2", "NFS1", "PROM2", "STEAP3"}
+    # The five the old package set carried that the analysis set does not.
+    REMOVED = {"ALOX15B", "CARS1", "CISD2", "PEBP1", "SLC3A2"}
+
+    def test_has_33_distinct_genes(self) -> None:
+        assert len(pathways.FERROPTOSIS) == 33
+        assert len(set(pathways.FERROPTOSIS)) == 33
+
+    def test_includes_analysis_specific_genes(self) -> None:
+        for gene in self.ANALYSIS_ONLY:
+            assert gene in pathways.FERROPTOSIS, f"{gene} missing from ferroptosis set"
+
+    def test_excludes_removed_genes(self) -> None:
+        for gene in self.REMOVED:
+            assert gene not in pathways.FERROPTOSIS, f"{gene} should have been removed"
+
+    def test_core_regulators_retained(self) -> None:
+        # Named in Methods 2.4; present in both sets, must survive the swap.
+        for gene in ("GPX4", "ACSL4", "SLC7A11", "FTH1", "NFE2L2"):
+            assert gene in pathways.FERROPTOSIS
+
+
 class TestFerroptosisCanonicalValue:
-    """Pin the one ferroptosis CV the manuscript should use everywhere.
+    """Pin the chordoma ferroptosis CV the whole manuscript uses.
 
-    Chordoma CSC ferroptosis CV appears in the analysis output as two values:
-    5.387 (used by the text section 3.3/3.4 and by the pan-cancer table) and 5.609
-    (in the scVI and gene-set-sensitivity intermediates, and printed on the
-    published Figure 2). The two come from runs that resolved a different number of
-    ferroptosis genes for the chordoma cells -- one found the whole 33-symbol set,
-    the other 32.
+    The chordoma CSC ferroptosis CV was reported two ways: 5.61 (the analysis /
+    Colab set, printed on Figure 2, the scVI decomposition, and gene-set
+    sensitivity) and 5.387 (an earlier pan-cancer run that used a different
+    ferroptosis gene set). Once the package is standardized to the analysis set,
+    5.61 is canonical everywhere, and the pan-cancer table carries it so Figure 3
+    and the text agree.
 
-    The pan-cancer comparison and the two rank claims in section 3.4 all rest on
-    5.387 computed the same way across every cancer type, so 5.387 is canonical.
-    Figure 2's 5.61 is the outlier and must be brought to 5.39. This test fixes the
-    canonical value in the tracked data so the rest cannot drift away from it.
+    Rank consequence: at 5.61 chordoma is seventh of twelve for ferroptosis (it was
+    quoted as fifth under the old value), still moderate coordination, well inside
+    the range of solid tumors.
     """
 
     def test_chordoma_ferroptosis_cv_is_canonical(self) -> None:
         if not DATA_CSV.exists():
             pytest.skip(f"{DATA_CSV} not present")
         panel = pd.read_csv(DATA_CSV).set_index("cancer_type")
-        assert panel.loc["Chordoma", "ferroptosis_cv"] == pytest.approx(5.387, abs=1e-3)
+        assert panel.loc["Chordoma", "ferroptosis_cv"] == pytest.approx(5.609, abs=1e-3)
+
+    def test_chordoma_ferroptosis_ranks_seventh(self) -> None:
+        # Results 3.4 (revised): "seventh of twelve (CV = 5.61)".
+        if not DATA_CSV.exists():
+            pytest.skip(f"{DATA_CSV} not present")
+        panel = pd.read_csv(DATA_CSV).sort_values("ferroptosis_cv").reset_index(drop=True)
+        rank = int(panel.index[panel["cancer_type"] == "Chordoma"][0]) + 1
+        assert rank == 7
 
     def test_pan_cancer_ferroptosis_all_finite(self) -> None:
         # Every cancer type must carry a ferroptosis CV computed on the same

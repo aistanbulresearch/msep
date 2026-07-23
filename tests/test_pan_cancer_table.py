@@ -103,12 +103,13 @@ class TestEmtCoordination:
 class TestPathwaySelectivity:
     """Results 3.4: chordoma is exceptional for EMT but not for the other two."""
 
-    def test_chordoma_ferroptosis_ranks_fifth_of_twelve(self, panel: pd.DataFrame) -> None:
-        # "For ferroptosis, chordoma ranked fifth of twelve (CV = 5.387),
-        # indicating moderate but not exceptional coordination."
-        assert _rank_of(panel, "Chordoma", "ferroptosis_cv") == 5
+    def test_chordoma_ferroptosis_ranks_seventh_of_twelve(self, panel: pd.DataFrame) -> None:
+        # "For ferroptosis, chordoma ranked seventh of twelve (CV = 5.61),
+        # indicating moderate but not exceptional coordination." Value and rank
+        # follow from standardizing on the analysis ferroptosis gene set.
+        assert _rank_of(panel, "Chordoma", "ferroptosis_cv") == 7
         chordoma = panel.loc[panel["cancer_type"] == "Chordoma"].iloc[0]
-        assert chordoma["ferroptosis_cv"] == pytest.approx(5.387, abs=1e-3)
+        assert chordoma["ferroptosis_cv"] == pytest.approx(5.609, abs=1e-3)
 
     def test_chordoma_immune_evasion_ranks_ninth_of_twelve(
         self, panel: pd.DataFrame
