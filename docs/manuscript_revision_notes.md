@@ -125,30 +125,42 @@ The gene-level scatter, recomputed over all 23 genes, is Supplementary Figure S1
 legend to three panels and add the S15 pointer (see A4 text). *(Rebuilt by
 `notebooks/paper_figures/figure6_bulk_validation.py`.)*
 
-### B2. Figure 2 — ferroptosis CV should read 5.39, not 5.61 · [author action]
+### B2. Ferroptosis gene set standardized; text and Figure 3 updated · [Figure 3 = author action]
 
-Figure 2 panels B and C show chordoma CSC ferroptosis CV = **5.61** (the 33-gene
-run). The text (§3.3, §3.4) and Figure 3 use **5.387** (32 genes), and the entire
-pan-cancer comparison and both §3.4 rank claims depend on 5.387 computed the same way
-across all 12 cancer types. 5.387 is canonical; change Figure 2's ferroptosis bar
-and heatmap cell to **5.39**.
+Resolved by re-running from the chordoma `.h5ad`. The discrepancy was not a 33-vs-32
+gene issue but **two different 33-gene ferroptosis sets** sharing only 28 genes:
 
-This figure could not be regenerated in the repo — Panel C needs per-cell-type CV for
-seven cell types and only four are in `processed/`, and Panel D is a schematic — so
-the edit must be made against the original Figure 2 source. The canonical value is
-pinned by `test_curation_and_cv.py::TestFerroptosisCanonicalValue`.
+| | Genes |
+|---|---|
+| Analysis set (Figure 2, scVI, sensitivity) | includes HSPB1, IREB2, NFS1, PROM2, STEAP3 → CV **5.61** |
+| Old package/pan-cancer set | includes ALOX15B, CARS1, CISD2, PEBP1, SLC3A2 → CV **5.387** |
 
-Origin of the discrepancy: two pipeline runs resolved a different number of
-ferroptosis genes for the chordoma cells (33 vs 32). The one missing gene has a
-finite CV of 12.713, i.e. it was absent from one run's `var_names` rather than
-dropped for zero expression. Identifying it requires the chordoma `.h5ad`:
+All 33 analysis-set genes are present and expressed in CSC (confirmed on the h5ad), so
+the **analysis set is canonical**. The package, the pan-cancer table, and Table S1 are
+now standardized to it **[done in repo]**:
 
-```python
-import msep.pathways as P
-csc = adata[adata.obs['cell_type_fine'] == 'CSC_TBXT+']
-present, missing, idx = P.resolve_genes(adata.var_names, P.FERROPTOSIS)
-print('absent from var_names:', missing)
-```
+- `msep.pathways.FERROPTOSIS` swapped to the analysis set (5 genes).
+- `data/pan_cancer_cv.csv`: chordoma ferroptosis 5.387 → **5.609**; rank **5th → 7th**
+  of twelve (robust: the types straddling chordoma are gene-set-invariant).
+- Table S1 regenerated with the correct genes.
+- Text edits applied to `manuscript/main.tex`: §3.3 "second-lowest CV (**5.61**)",
+  §3.4 "**seventh** of twelve (CV = **5.61**)".
+
+The 7th-place rank is still moderate coordination, well inside the solid-tumor range;
+the pathway-selectivity thesis (EMT far more coordinated than ferroptosis or immune
+evasion) is unaffected. *(Guarded by `test_curation_and_cv.py::TestFerroptosisGeneSet`,
+`::TestFerroptosisCanonicalValue`, and `test_pan_cancer_table.py`.)*
+
+**Figure 2** shows 5.61 and is therefore already correct — no change.
+
+**Figure 3 · [author action]:** the published `Figure_3_PanCancer.png` shows chordoma
+ferroptosis **5.39** and must be regenerated to **5.61** (Panel A heatmap cell + Panel C
+ferroptosis bar). The figure source is in Colab; regenerate the chordoma column with the
+canonical set. For full visual consistency, regenerating all 12 cancer types' ferroptosis
+column on the canonical set is ideal, but only chordoma is quoted in the text and the
+rank is settled. (The tracked reproducibility notebook `figure3_pan_cancer.ipynb` already
+renders 5.61 from `data/pan_cancer_cv.csv`, in a different layout from the published
+figure.)
 
 ---
 
@@ -184,5 +196,5 @@ citations; Methods §2.4 records only pathway-level provenance) and **S2 `refere
 | Supplementary table shapes & §3.2 medians (A1) | `test_supplementary_tables.py` |
 | PVRL2/NECTIN2, gene count, ferroptosis 5.387 (A2, B2) | `test_curation_and_cv.py` |
 
-Run `pytest` to confirm the current tree still satisfies every pinned claim (117
+Run `pytest` to confirm the current tree still satisfies every pinned claim (122
 tests at the time of writing).
