@@ -16,9 +16,10 @@ Writes to ``figures/Supplementary/tables/``:
     Table_S1.csv ... Table_S10.csv
     Supplementary_Tables_S1-S10.xlsx     (one sheet per table)
 
-Two columns need author input before submission and are emitted empty:
-S1 ``literature_source`` (per-gene citations; only pathway-level provenance is
-recorded in Methods 2.4) and S2 ``reference``.
+Gene- and cell-type-level provenance is given at the set level: S1 carries
+``set_provenance`` (e.g. "FerrDb V2 and literature curation") and S2 carries
+``annotation_criterion``. Per-gene / per-marker citations are not recorded in the
+analysis and are left to the manuscript's Methods rather than these tables.
 """
 
 from __future__ import annotations
@@ -146,7 +147,6 @@ def table_s1() -> pd.DataFrame:
                 "gene": gene,
                 "functional_role": gene_to_role.get(gene, ""),
                 "set_provenance": PATHWAY_PROVENANCE[pathway],
-                "literature_source": "",  # per-gene citation: author input required
             })
     return pd.DataFrame(rows)
 
@@ -158,7 +158,6 @@ def table_s2() -> pd.DataFrame:
         columns=["cell_type", "marker_genes", "annotation_criterion", "n_cells"],
     )
     df["pct_of_total"] = (df["n_cells"] / df["n_cells"].sum() * 100).round(1)
-    df["reference"] = ""  # author input required
     return df
 
 
